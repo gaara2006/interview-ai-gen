@@ -2,6 +2,7 @@ import { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import InputField from "../components/InputField";
 import { Link } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -23,6 +24,21 @@ function Login() {
   } else if (password.length < 8) {
     newErrors.password = "Minimum 8 characters required";
   }
+
+  const getPasswordStrength = () => {
+    if (password.length === 0) return 0;
+    if (password.length < 6) return 1;
+    if (password.length < 8) return 2;
+    if (
+      /[A-Z]/.test(password) &&
+      /[0-9]/.test(password) &&
+      /[!@#$%^&*]/.test(password)
+    )
+      return 4;
+    return 3;
+  };
+
+  const strength = getPasswordStrength();
 
   setErrors(newErrors);
 
@@ -49,6 +65,7 @@ function Login() {
       title="Welcome Back 👋"
       subtitle="Login to continue your interview preparation"
     >
+      {/*login form*/}
       <form onSubmit={handleLogin} className="space-y-5">
         <InputField
         type="email"
@@ -65,7 +82,7 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           error={errors.password}
         />
-
+        
         <div className="flex justify-between text-sm text-gray-400">
           <label className="flex gap-2 items-center">
             <input type="checkbox" /> Remember me
@@ -75,31 +92,42 @@ function Login() {
           </button>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-blue-900 transition font-semibold flex justify-center items-center gap-2"
-        >
-          {loading ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Signing In...
-            </>
-          ) : (
-            "Sign In"
-          )}
-        </button>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-semibold flex items-center justify-center gap-2 transition disabled:opacity-60"
+      >
+        {loading ? (
+          <>
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            Signing In...
+          </>
+        ) : (
+          "Sign In"
+        )}
+      </button>
+      
+       
+      {/* </button> */}
       </form>
 
+      {/* {divider - Form ke bahar}     */}
       <div className="my-6 flex items-center gap-4">
         <div className="flex-1 h-px bg-gray-700"></div>
         <span className="text-gray-500 text-sm">OR</span>
         <div className="flex-1 h-px bg-gray-700"></div>
       </div>
 
-      <button className="w-full border border-gray-700 rounded-xl py-3 hover:bg-white/10 transition">
-        Continue with Google
-      </button>
+        {/* {google button} */}
+          <button
+          type="button"
+          className="w-full border border-gray-700 rounded-xl py-3 hover:bg-white/10 transition flex items-center justify-center gap-3 font-medium"
+          >
+          <FcGoogle size={22} />
+          Continue with Google
+          </button>
+
+     
 
       <p className="text-center text-gray-400 mt-6 text-sm">
         Don't have an account?{' '}

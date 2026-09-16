@@ -2,14 +2,18 @@ import { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import InputField from "../components/InputField";
 import { Link } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
 
 function Signup() {
+  //States
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
     const [errors, setErrors] = useState({});
 
+    // 👇 Validation function yahan hoga
     const validateForm = () => {
         const newErrors = {};
 
@@ -36,26 +40,39 @@ function Signup() {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
+  
+// ✅ HANDLE SIGNUP YAHAN ADD KARNA HAI
+  const handleSignup = (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    alert("Account Created Successfully 🚀");
+  };
+
 
   return (
     <AuthLayout
       title="Create Account 🚀"
       subtitle="Start preparing for interviews with AI"
     >
-      <form onSubmit={validateForm} className="space-y-5">
+      <form onSubmit={handleSignup} className="space-y-5">
         <InputField
           type="text"
           placeholder="Full Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           error={errors.name} 
+         
         />
+
 
         <InputField
           type="email"
           placeholder="Email Address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          error={errors.email}
         />
 
         <InputField
@@ -63,6 +80,7 @@ function Signup() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={errors.password}
         />
 
         <InputField
@@ -70,22 +88,29 @@ function Signup() {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          error={errors.confirmPassword}
         />
+        
+      <button
+        type="submit"
+        className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition font-semibold"
+        >
+        Create Account
+      </button>
+     
+      <div className="my-6 flex items-center gap-4">
+      <div className="flex-1 h-px bg-slate-700"></div>
+      <span className="text-gray-500 text-sm">OR</span>
+      <div className="flex-1 h-px bg-slate-700"></div>
+      </div>
 
-       <button
-  type="submit"
-  disabled={loading}
-  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-blue-900 transition font-semibold flex justify-center items-center gap-2"
->
-  {loading ? (
-    <>
-      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-      Signing In...
-    </>
-  ) : (
-    "Sign In"
-  )}
-</button>
+      <button
+      type="button"
+      className="w-full py-3 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 flex items-center justify-center gap-3 transition"
+      >
+      <FcGoogle size={22} />
+      Continue with Google
+      </button>
       </form>
 
       <p className="text-center text-gray-400 mt-6 text-sm">
