@@ -3,6 +3,7 @@ import AuthLayout from "../components/AuthLayout";
 import InputField from "../components/InputField";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   //States
@@ -10,6 +11,9 @@ function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [serverError, setServerError] = useState("");
 
     const [errors, setErrors] = useState({});
 
@@ -42,13 +46,48 @@ function Signup() {
     };
   
 // ✅ HANDLE SIGNUP YAHAN ADD KARNA HAI
-  const handleSignup = (e) => {
-    e.preventDefault();
+  
+    const handleSignup = async (e) => {
+      e.preventDefault();
+      setServerError("");
 
-    if (!validateForm()) return;
+      if (!validateForm()) return;
 
-    alert("Account Created Successfully 🚀");
-  };
+      setLoading(true);
+
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/auth/signup",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              email,
+              password,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setServerError(data.message || "Signup failed");
+          return;
+        }
+
+        alert("Account Created Successfully 🚀");
+        navigate("/");
+      } catch (error) {
+        setServerError(
+          "Server se connect nahi ho pa raha. Please try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
 
 
   return (
@@ -90,13 +129,20 @@ function Signup() {
           onChange={(e) => setConfirmPassword(e.target.value)}
           error={errors.confirmPassword}
         />
-        
-      <button
+        {serverError && (
+        <p className="text-red-400 text-sm" role="alert">
+        {serverError}
+        </p>
+        )}
+     
+        <button
         type="submit"
-        className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition font-semibold"
+        disabled={loading}
+        className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition font-semibold disabled:opacity-60"
         >
-        Create Account
-      </button>
+        {loading ? "Creating Account..." : "Create Account"}
+        </button>
+
      
       <div className="my-6 flex items-center gap-4">
       <div className="flex-1 h-px bg-slate-700"></div>

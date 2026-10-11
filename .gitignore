@@ -1,0 +1,15 @@
+﻿# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build output and caches
+dist/
+.vite/
+coverage/
+
+# Local ZIP archives and temporary files
+*.zip

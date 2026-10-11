@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import InputField from "../components/InputField";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 
 function Login() {
@@ -9,55 +10,77 @@ function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  
+  const [serverError, setServerError] = useState("");
+
+  const navigate = useNavigate();
+
   const validateForm = () => {
-  const newErrors = {};
+    const newErrors = {};
 
-  if (!email.trim()) {
-    newErrors.email = "Email is required";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    newErrors.email = "Enter a valid email";
-  }
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+    ) {
+      newErrors.email = "Enter a valid email";
+    }
 
-  if (!password) {
-    newErrors.password = "Password is required";
-  } else if (password.length < 8) {
-    newErrors.password = "Minimum 8 characters required";
-  }
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 8) {
+      newErrors.password = "Minimum 8 characters required";
+    }
 
-  const getPasswordStrength = () => {
-    if (password.length === 0) return 0;
-    if (password.length < 6) return 1;
-    if (password.length < 8) return 2;
-    if (
-      /[A-Z]/.test(password) &&
-      /[0-9]/.test(password) &&
-      /[!@#$%^&*]/.test(password)
-    )
-      return 4;
-    return 3;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const strength = getPasswordStrength();
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setServerError("");
 
-  setErrors(newErrors);
+    if (!validateForm()) return;
 
-  return Object.keys(newErrors).length === 0;
-  };
+    setLoading(true);
 
-  const handleLogin = (e) => {
-  e.preventDefault();
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email.trim().toLowerCase(),
+            password,
+          }),
+        }
+      );
 
-  if (!validateForm()) return;
+      const data = await response.json();
 
-  setLoading(true);
+      if (!response.ok) {
+        setServerError(data.message || "Login failed");
+        return;
+      }
 
-  // Temporary fake API call
-  setTimeout(() => {
-    setLoading(false);
+      if (!data.token || !data.user) {
+        setServerError("Invalid server response. Please try again.");
+        return;
+      }
 
-    alert("Login Successful 🚀");
-  }, 1500);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      navigate("/dashboard");
+    } catch (error) {
+      setServerError(
+        "Cannot connect to the server. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,14 +88,13 @@ function Login() {
       title="Welcome Back 👋"
       subtitle="Login to continue your interview preparation"
     >
-      {/*login form*/}
       <form onSubmit={handleLogin} className="space-y-5">
         <InputField
-        type="email"
-        placeholder="Email Address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        error={errors.email}
+          type="email"
+          placeholder="Email Address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          error={errors.email}
         />
 
         <InputField
@@ -82,55 +104,56 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           error={errors.password}
         />
-        
+
         <div className="flex justify-between text-sm text-gray-400">
           <label className="flex gap-2 items-center">
-            <input type="checkbox" /> Remember me
+            <input type="checkbox" />
+            Remember me
           </label>
+
           <button type="button" className="text-blue-400">
             Forgot Password?
           </button>
         </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-semibold flex items-center justify-center gap-2 transition disabled:opacity-60"
-      >
-        {loading ? (
-          <>
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            Signing In...
-          </>
-        ) : (
-          "Sign In"
+        {serverError && (
+          <p className="text-red-400 text-sm" role="alert">
+            {serverError}
+          </p>
         )}
-      </button>
-      
-       
-      {/* </button> */}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-semibold flex items-center justify-center gap-2 transition disabled:opacity-60"
+        >
+          {loading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Signing In...
+            </>
+          ) : (
+            "Sign In"
+          )}
+        </button>
       </form>
 
-      {/* {divider - Form ke bahar}     */}
       <div className="my-6 flex items-center gap-4">
         <div className="flex-1 h-px bg-gray-700"></div>
         <span className="text-gray-500 text-sm">OR</span>
         <div className="flex-1 h-px bg-gray-700"></div>
       </div>
 
-        {/* {google button} */}
-          <button
-          type="button"
-          className="w-full border border-gray-700 rounded-xl py-3 hover:bg-white/10 transition flex items-center justify-center gap-3 font-medium"
-          >
-          <FcGoogle size={22} />
-          Continue with Google
-          </button>
-
-     
+      <button
+        type="button"
+        className="w-full border border-gray-700 rounded-xl py-3 hover:bg-white/10 transition flex items-center justify-center gap-3 font-medium"
+      >
+        <FcGoogle size={22} />
+        Continue with Google
+      </button>
 
       <p className="text-center text-gray-400 mt-6 text-sm">
-        Don't have an account?{' '}
+        Don't have an account?{" "}
         <Link to="/signup" className="text-blue-400 font-semibold">
           Create one
         </Link>
