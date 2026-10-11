@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
+import { API_URL } from "../config/api";
 
 const Progress = () => {
   const [progress, setProgress] = useState({
@@ -26,7 +27,7 @@ const Progress = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/interviews/progress",
+          `${API_URL}/api/interviews/progress`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

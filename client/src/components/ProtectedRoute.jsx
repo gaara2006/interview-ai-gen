@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { API_URL } from "../config/api";
 
 const ProtectedRoute = ({ children }) => {
   const [status, setStatus] = useState("checking");
@@ -17,7 +18,7 @@ const ProtectedRoute = ({ children }) => {
 
     const verifySession = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/auth/me", {
+        const response = await fetch(`${API_URL}/api/auth/me`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

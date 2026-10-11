@@ -9,9 +9,24 @@ const resumeRoutes = require("./routes/resumes");
 
 const app = express();
 
+// Keep local development working, and add deployed frontend origins via CLIENT_URLS.
+// Example: CLIENT_URLS=http://localhost:5173,https://your-frontend.onrender.com
+const allowedOrigins = [
+  "http://localhost:5173",
+  ...(process.env.CLIENT_URLS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS policy does not allow origin: ${origin}`));
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -31,8 +46,8 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server listening on port ${PORT}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error.message);

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
+import { API_URL } from "../config/api";
 
-const API_BASE = "http://localhost:5000/api/auth";
+const API_BASE = `${API_URL}/api/auth`;
 
 const readStoredUser = () => {
   try {

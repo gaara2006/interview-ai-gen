@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
+import { API_URL } from "../config/api";
 
 const QUESTION_SETS = {
   HR: [
@@ -83,7 +84,7 @@ const Interview = () => {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/interviews", {
+      const response = await fetch(`${API_URL}/api/interviews`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

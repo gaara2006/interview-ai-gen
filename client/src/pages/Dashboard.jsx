@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import StatCard from "../components/StatCard";
 import ActivityCard from "../components/ActivityCard";
+import { API_URL } from "../config/api";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Dashboard = () => {
       }
 
       try {
-        const response = await fetch("http://localhost:5000/api/interviews/dashboard", {
+        const response = await fetch(`${API_URL}/api/interviews/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal,
         });

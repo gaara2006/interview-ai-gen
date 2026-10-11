@@ -4,6 +4,7 @@ import InputField from "../components/InputField";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config/api";
 
 function Signup() {
   //States
@@ -57,7 +58,7 @@ function Signup() {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/auth/signup",
+          `${API_URL}/api/auth/signup`,
           {
             method: "POST",
             headers: {

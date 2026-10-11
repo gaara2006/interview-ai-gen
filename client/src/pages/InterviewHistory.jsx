@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
+import { API_URL } from "../config/api";
 
 const InterviewHistory = () => {
   const [sessions, setSessions] = useState([]);
@@ -22,7 +23,7 @@ const InterviewHistory = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/interviews/history",
+          `${API_URL}/api/interviews/history`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

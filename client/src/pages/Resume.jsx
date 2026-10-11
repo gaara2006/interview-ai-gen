@@ -1,7 +1,8 @@
 import { useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
+import { API_URL } from "../config/api";
 
-const API_BASE = "http://localhost:5000/api/resumes";
+const API_BASE = `${API_URL}/api/resumes`;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const bulletList = (items, emptyText = "No items returned.") => {
