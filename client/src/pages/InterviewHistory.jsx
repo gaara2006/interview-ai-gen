@@ -107,11 +107,11 @@ const InterviewHistory = () => {
         )}
 
         {loading ? (
-          <div className="rounded-2xl border border-slate-700 bg-slate-800 p-6 text-slate-300">
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 text-slate-300">
             Loading your interview history...
           </div>
         ) : !error && sessions.length === 0 ? (
-          <div className="rounded-2xl border border-slate-700 bg-slate-800 p-8 text-center">
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 text-center">
             <h2 className="text-xl font-semibold text-white">
               No interviews yet
             </h2>
@@ -128,11 +128,11 @@ const InterviewHistory = () => {
               return (
                 <article
                   key={session._id}
-                  className="rounded-2xl border border-slate-700 bg-slate-800 p-5"
+                  className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5"
                 >
                   <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
-                      <span className="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-300">
+                      <span className="inline-block rounded-full bg-violet-500/10 px-3 py-1 text-sm font-medium text-violet-300">
                         {session.type || "Interview"}
                       </span>
 
@@ -146,7 +146,7 @@ const InterviewHistory = () => {
                         {questions.length} questions · {formatDuration(session.durationSeconds)}
                       </p>
                       {session.evaluation ? (
-                        <p className="mt-2 text-sm font-semibold text-blue-300">
+                        <p className="mt-2 text-sm font-semibold text-violet-300">
                           AI score: {session.evaluation.overallScore}/100
                         </p>
                       ) : (
@@ -163,7 +163,7 @@ const InterviewHistory = () => {
                           isExpanded ? null : session._id
                         )
                       }
-                      className="rounded-lg border border-slate-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+                      className="rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
                       aria-expanded={isExpanded}
                     >
                       {isExpanded ? "Hide Answers" : "View Answers"}
@@ -171,7 +171,7 @@ const InterviewHistory = () => {
                   </div>
 
                   {isExpanded && (
-                    <div className="mt-5 space-y-4 border-t border-slate-700 pt-5">
+                    <div className="mt-5 space-y-4 border-t border-zinc-800 pt-5">
                       {questions.length === 0 ? (
                         <p className="text-sm text-slate-400">
                           No questions were saved for this session.
@@ -192,8 +192,8 @@ const InterviewHistory = () => {
                             {session.evaluation?.answers?.[index] && (
                               <div className="mt-4 space-y-2 rounded-lg border border-slate-700 bg-slate-950/60 p-3">
                                 <div className="flex items-center justify-between gap-3">
-                                  <p className="text-sm font-semibold text-blue-300">AI feedback</p>
-                                  <span className="rounded-md bg-blue-500/10 px-2 py-1 text-sm font-semibold text-blue-300">
+                                  <p className="text-sm font-semibold text-violet-300">AI feedback</p>
+                                  <span className="rounded-md bg-violet-500/10 px-2 py-1 text-sm font-semibold text-violet-300">
                                     {session.evaluation.answers[index].score}/10
                                   </span>
                                 </div>
@@ -202,7 +202,7 @@ const InterviewHistory = () => {
                                   <p className="text-sm text-amber-300"><span className="font-semibold">Improve: </span>{session.evaluation.answers[index].improvements.join("; ")}</p>
                                 )}
                                 <details className="pt-1">
-                                  <summary className="cursor-pointer text-sm font-medium text-blue-300">View improved sample</summary>
+                                  <summary className="cursor-pointer text-sm font-medium text-violet-300">View improved sample</summary>
                                   <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-300">{session.evaluation.answers[index].improvedAnswer}</p>
                                 </details>
                               </div>

@@ -112,7 +112,7 @@ function Login() {
             Remember me
           </label>
 
-          <button type="button" className="text-blue-400">
+          <button type="button" className="text-violet-400">
             Forgot Password?
           </button>
         </div>
@@ -126,7 +126,7 @@ function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-semibold flex items-center justify-center gap-2 transition disabled:opacity-60"
+          className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 font-semibold flex items-center justify-center gap-2 transition disabled:opacity-60"
         >
           {loading ? (
             <>
@@ -155,7 +155,7 @@ function Login() {
 
       <p className="text-center text-gray-400 mt-6 text-sm">
         Don't have an account?{" "}
-        <Link to="/signup" className="text-blue-400 font-semibold">
+        <Link to="/signup" className="text-violet-400 font-semibold">
           Create one
         </Link>
       </p>

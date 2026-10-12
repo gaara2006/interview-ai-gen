@@ -139,7 +139,7 @@ function Signup() {
         <button
         type="submit"
         disabled={loading}
-        className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition font-semibold disabled:opacity-60"
+        className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 transition font-semibold disabled:opacity-60"
         >
         {loading ? "Creating Account..." : "Create Account"}
         </button>

@@ -181,7 +181,7 @@ const Settings = () => {
       : "border border-red-800 bg-red-950/40 text-red-300";
 
   const fieldClass =
-    "mt-2 w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20";
+    "mt-2 w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20";
 
   return (
     <DashboardLayout>
@@ -239,7 +239,7 @@ const Settings = () => {
             <button
               type="submit"
               disabled={profileLoading || profileSaving}
-              className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-xl bg-violet-600 px-5 py-3 font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {profileLoading ? "Loading profile..." : profileSaving ? "Saving..." : "Save profile"}
             </button>

@@ -87,7 +87,7 @@ const Progress = () => {
         <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-2xl border border-slate-700 bg-slate-800 p-5">
             <p className="text-slate-400">Completed Sessions</p>
-            <p className="mt-3 text-3xl font-bold text-blue-400">
+            <p className="mt-3 text-3xl font-bold text-violet-400">
               {loading ? "..." : progress.totalSessions}
             </p>
           </div>
@@ -139,7 +139,7 @@ const Progress = () => {
 
                     <div className="h-2 overflow-hidden rounded-full bg-slate-700">
                       <div
-                        className="h-full rounded-full bg-blue-500"
+                        className="h-full rounded-full bg-violet-500"
                         style={{
                           width: `${
                             progress.totalQuestions > 0

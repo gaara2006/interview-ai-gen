@@ -3,20 +3,20 @@ import { LuBrainCircuit } from "react-icons/lu";
 
 function AuthLayout({ title, subtitle, children }) {
   return (
-    <div className="min-h-screen bg-slate-950 relative overflow-hidden text-white">
+    <div className="min-h-screen bg-zinc-950 relative overflow-hidden text-white">
 
       {/* Background Gradient */}
-      <div className="absolute w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] -top-24 -left-24"></div>
+      <div className="absolute w-96 h-96 bg-violet-600/20 rounded-full blur-[120px] -top-24 -left-24"></div>
       <div className="absolute w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] bottom-0 right-0"></div>
-      <div className="absolute top-20 left-20 w-32 h-32 rounded-full bg-blue-500/20 blur-3xl animate-pulse"></div>
+      <div className="absolute top-20 left-20 w-32 h-32 rounded-full bg-violet-500/20 blur-3xl animate-pulse"></div>
       <div className="absolute bottom-20 right-20 w-40 h-40 rounded-full bg-purple-500/20 blur-3xl animate-pulse"></div>
-      <div className="absolute top-1/2 left-1/3 w-24 h-24 rounded-full bg-cyan-400/20 blur-2xl animate-bounce"></div>
+      <div className="absolute top-1/2 left-1/3 w-24 h-24 rounded-full bg-purple-400/20 blur-2xl animate-bounce"></div>
       <div className="relative z-10 min-h-screen grid lg:grid-cols-2">
 
         {/* LEFT SIDE */}
         <div className="hidden lg:flex flex-col justify-center px-20">
         <div className="flex items-center gap-4 mb-8">
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-2xl shadow-lg shadow-blue-500/30">
+        <div className="bg-gradient-to-r from-violet-500 to-purple-600 p-4 rounded-2xl shadow-lg shadow-violet-500/30">
         <LuBrainCircuit size={36} />
         </div>
 

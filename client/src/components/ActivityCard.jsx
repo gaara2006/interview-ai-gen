@@ -4,7 +4,7 @@ const ActivityCard = ({ title, status }) => {
       ? "text-green-400"
       : status === "Pending"
       ? "text-yellow-400"
-      : "text-blue-400";
+      : "text-violet-400";
 
   return (
     <div className="flex justify-between items-center bg-slate-800 p-4 rounded-xl border border-slate-700 hover:border-slate-500 transition">

@@ -37,11 +37,11 @@ function InputField({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`w-full rounded-xl bg-slate-900/80 border py-3 pl-12 pr-12 text-white outline-none transition-all
+          className={`w-full rounded-xl bg-zinc-900/80 border py-3 pl-12 pr-12 text-white outline-none transition-all
             ${
               error
                 ? "border-red-500"
-                : "border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
+                : "border-zinc-800 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30"
             }`}
         />
 

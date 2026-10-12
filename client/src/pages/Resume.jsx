@@ -121,7 +121,7 @@ const Resume = () => {
             <button
               type="submit"
               disabled={loading}
-              className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Analyzing resume..." : "Analyze Resume"}
             </button>
@@ -139,9 +139,9 @@ const Resume = () => {
                 <h2 className="mt-1 text-xl font-bold text-white">{review.filename}</h2>
                 <p className="mt-2 text-slate-300">{review.summary}</p>
               </div>
-              <div className="min-w-32 rounded-xl border border-blue-500/40 bg-slate-900 p-4 text-center">
+              <div className="min-w-32 rounded-xl border border-violet-500/40 bg-slate-900 p-4 text-center">
                 <p className="text-sm text-slate-400">Resume score</p>
-                <p className="text-3xl font-bold text-blue-400">{review.score}<span className="text-base text-slate-400">/100</span></p>
+                <p className="text-3xl font-bold text-violet-400">{review.score}<span className="text-base text-slate-400">/100</span></p>
                 <p className="mt-1 text-xs capitalize text-slate-300">ATS readiness: {review.atsReadiness}</p>
               </div>
             </div>
@@ -171,8 +171,8 @@ const Resume = () => {
             </div>
 
             {review.rewrittenSummary && (
-              <div className="rounded-xl border border-blue-500/30 bg-blue-950/20 p-5">
-                <h3 className="mb-3 font-semibold text-blue-200">Suggested professional summary</h3>
+              <div className="rounded-xl border border-violet-500/30 bg-violet-950/20 p-5">
+                <h3 className="mb-3 font-semibold text-violet-200">Suggested professional summary</h3>
                 <p className="whitespace-pre-wrap leading-7 text-slate-200">{review.rewrittenSummary}</p>
               </div>
             )}

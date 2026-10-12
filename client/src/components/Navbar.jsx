@@ -35,7 +35,7 @@ const Navbar = () => {
   const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
 
   return (
-    <header className="bg-slate-950 border-b border-slate-800 min-h-20 flex items-center justify-between gap-4 px-4 sm:px-8 py-3">
+    <header className="bg-zinc-950 border-b border-zinc-800 min-h-20 flex items-center justify-between gap-4 px-4 sm:px-8 py-3">
       <div>
         <h2 className="text-xl font-bold">{greeting} 👋</h2>
         <p className="text-slate-400 text-sm">Welcome back, {user?.name || "there"}</p>
@@ -43,11 +43,11 @@ const Navbar = () => {
 
       <div className="flex items-center gap-4 sm:gap-6">
         <FaBell className="text-lg text-slate-300" aria-label="Notifications" />
-        <FaUserCircle className="text-3xl text-blue-400" aria-hidden="true" />
+        <FaUserCircle className="text-3xl text-violet-400" aria-hidden="true" />
         <button
           type="button"
           onClick={handleLogout}
-          className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800 transition"
+          className="rounded-lg border border-zinc-800 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-zinc-900 transition"
         >
           Log out
         </button>
