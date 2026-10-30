@@ -120,6 +120,9 @@ export default function Interview() {
   const typeRef = useRef("HR");
   const startedAtRef = useRef(null);
   const mutedRef = useRef(false);
+  const speechAbortRef = useRef(null);
+  const speechAudioRef = useRef(null);
+  const speechObjectUrlRef = useRef(null);
 
   const [type, setType] = useState("HR");
   const [status, setStatus] = useState("ready");
@@ -160,6 +163,31 @@ export default function Interview() {
       window.clearTimeout(autoListenTimerRef.current);
       autoListenTimerRef.current = null;
     }
+  };
+
+  // Stop either the server-generated audio or the local browser fallback voice.
+  const stopSpeech = () => {
+    if (speechAbortRef.current) {
+      speechAbortRef.current.abort();
+      speechAbortRef.current = null;
+    }
+
+    const player = speechAudioRef.current;
+    if (player) {
+      player.onended = null;
+      player.onerror = null;
+      player.pause();
+      player.removeAttribute("src");
+      player.load();
+      speechAudioRef.current = null;
+    }
+
+    if (speechObjectUrlRef.current) {
+      URL.revokeObjectURL(speechObjectUrlRef.current);
+      speechObjectUrlRef.current = null;
+    }
+
+    window.speechSynthesis?.cancel();
   };
 
   const scheduleAutoSubmit = (text) => {
@@ -215,7 +243,7 @@ export default function Interview() {
       activeRef.current = false;
       clearAutoSubmitTimer();
       clearAutoListenTimer();
-      window.speechSynthesis?.cancel();
+      stopSpeech();
       recognitionRef.current?.stop?.();
       streamRef.current?.getTracks().forEach((track) => track.stop());
     };
@@ -244,26 +272,29 @@ export default function Interview() {
     return () => window.clearInterval(intervalId);
   }, [startedAt, status]);
 
-  const speak = async (text) => {
+  const scheduleListeningAfterSpeech = () => {
+    if (!activeRef.current) return;
+    setStatus("ready-to-answer");
+    if (!autoConversationRef.current || !recognitionSupported) return;
+
+    clearAutoListenTimer();
+    autoListenTimerRef.current = window.setTimeout(() => {
+      autoListenTimerRef.current = null;
+      if (activeRef.current && autoConversationRef.current && !loadingRef.current) {
+        startListening();
+      }
+    }, 350);
+  };
+
+  const speakWithBrowserFallback = async (text) => {
     if (
-      mutedRef.current ||
       !("speechSynthesis" in window) ||
       typeof SpeechSynthesisUtterance === "undefined"
     ) {
-      setStatus("ready-to-answer");
-      if (activeRef.current && autoConversationRef.current && recognitionSupported) {
-        clearAutoListenTimer();
-        autoListenTimerRef.current = window.setTimeout(() => {
-          autoListenTimerRef.current = null;
-          if (activeRef.current && autoConversationRef.current && !loadingRef.current) {
-            startListening();
-          }
-        }, 350);
-      }
+      scheduleListeningAfterSpeech();
       return;
     }
 
-    // Voice-only mode: use the browser's built-in TTS, without avatar or cloud TTS APIs.
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     const preferredVoice = await getPreferredBrowserVoice();
@@ -277,23 +308,107 @@ export default function Interview() {
     utterance.pitch = 1.04;
     utterance.volume = 1;
     utterance.onstart = () => setStatus("speaking");
-
-    const listenAfterQuestion = () => {
-      if (!activeRef.current) return;
-      setStatus("ready-to-answer");
-      if (!autoConversationRef.current || !recognitionSupported) return;
-      clearAutoListenTimer();
-      autoListenTimerRef.current = window.setTimeout(() => {
-        autoListenTimerRef.current = null;
-        if (activeRef.current && autoConversationRef.current && !loadingRef.current) {
-          startListening();
-        }
-      }, 350);
-    };
-
-    utterance.onend = listenAfterQuestion;
-    utterance.onerror = listenAfterQuestion;
+    utterance.onend = scheduleListeningAfterSpeech;
+    utterance.onerror = scheduleListeningAfterSpeech;
     window.speechSynthesis.speak(utterance);
+  };
+
+  const speak = async (text) => {
+    const cleanText = String(text || "").trim();
+    if (!cleanText) return;
+
+    if (mutedRef.current) {
+      scheduleListeningAfterSpeech();
+      return;
+    }
+
+    stopSpeech();
+    setStatus("speaking");
+
+    const token = localStorage.getItem("token");
+    const controller = new AbortController();
+    speechAbortRef.current = controller;
+
+    try {
+      if (!token) throw new Error("Login session missing. Please log in again.");
+
+      const response = await fetch(`${API_URL}/api/tts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text: cleanText }),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || "The consistent AI voice is temporarily unavailable.");
+      }
+
+      const audioBlob = await response.blob();
+      if (controller.signal.aborted || !activeRef.current) return;
+      if (!audioBlob.size || !audioBlob.type.includes("audio")) {
+        throw new Error("The AI voice service returned an invalid audio file.");
+      }
+
+      const objectUrl = URL.createObjectURL(audioBlob);
+      speechObjectUrlRef.current = objectUrl;
+      const player = new Audio(objectUrl);
+      player.preload = "auto";
+      speechAudioRef.current = player;
+
+      player.onended = () => {
+        if (speechAudioRef.current !== player) return;
+        speechAudioRef.current = null;
+        if (speechObjectUrlRef.current === objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+          speechObjectUrlRef.current = null;
+        }
+        scheduleListeningAfterSpeech();
+      };
+
+      player.onerror = () => {
+        if (speechAudioRef.current !== player) return;
+        player.onended = null;
+        player.onerror = null;
+        player.pause();
+        speechAudioRef.current = null;
+        if (speechObjectUrlRef.current === objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+          speechObjectUrlRef.current = null;
+        }
+        setError("AI voice playback failed. Using this browser's backup voice for this question.");
+        void speakWithBrowserFallback(cleanText);
+      };
+
+      await player.play();
+    } catch (error) {
+      if (error?.name === "AbortError" || controller.signal.aborted) return;
+      if (!activeRef.current) return;
+
+      console.error("Cloud AI voice failed:", error?.message || "Unknown TTS error");
+      setError("The consistent AI voice is temporarily unavailable. Using this browser's backup voice for this question.");
+
+      if (speechAudioRef.current) {
+        speechAudioRef.current.onended = null;
+        speechAudioRef.current.onerror = null;
+        speechAudioRef.current.pause();
+        speechAudioRef.current.removeAttribute("src");
+        speechAudioRef.current.load();
+        speechAudioRef.current = null;
+      }
+      if (speechObjectUrlRef.current) {
+        URL.revokeObjectURL(speechObjectUrlRef.current);
+        speechObjectUrlRef.current = null;
+      }
+      await speakWithBrowserFallback(cleanText);
+    } finally {
+      if (speechAbortRef.current === controller) {
+        speechAbortRef.current = null;
+      }
+    }
   };
 
   const enableCamera = async () => {
@@ -341,7 +456,7 @@ export default function Interview() {
     setMuted(nextMuted);
 
     if (nextMuted) {
-      window.speechSynthesis?.cancel();
+      stopSpeech();
       if (status === "speaking") setStatus("ready-to-answer");
     }
   };
@@ -359,7 +474,7 @@ export default function Interview() {
       return;
     }
 
-    window.speechSynthesis?.cancel();
+    stopSpeech();
     const recognition = new SpeechRecognition();
     recognition.lang = "en-IN";
     recognition.continuous = true;
@@ -558,7 +673,7 @@ export default function Interview() {
       if (!response.ok) throw new Error(data.message || "The interview could not be saved.");
 
       activeRef.current = false;
-      window.speechSynthesis?.cancel();
+      stopSpeech();
       recognitionRef.current?.stop?.();
       streamRef.current?.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -615,7 +730,7 @@ export default function Interview() {
     questionRef.current = STARTERS[typeRef.current];
     startedAtRef.current = null;
     setAutoConversation(true);
-    window.speechSynthesis?.cancel();
+    stopSpeech();
     recognitionRef.current?.stop?.();
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;

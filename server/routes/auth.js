@@ -6,6 +6,28 @@ const User = require("../models/User");
 
 const router = express.Router();
 
+const isTransientDatabaseError = (error) =>
+  /MongoNetworkError|MongoServerSelectionError|ECONNRESET|ETIMEDOUT|EHOSTUNREACH|tlsv1 alert|SSL routines|socket hang up|connection.*closed/i.test(
+    `${error?.name || ""} ${error?.code || ""} ${error?.message || ""}`
+  );
+
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+async function findLoginUserWithRetry(email) {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      return await User.findOne({ email });
+    } catch (error) {
+      if (attempt === 0 && isTransientDatabaseError(error)) {
+        await wait(400);
+        continue;
+      }
+      throw error;
+    }
+  }
+  return null;
+}
+
 // Authentication middleware for protected account-management endpoints.
 async function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -194,7 +216,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
-    const user = await User.findOne({ email: email.trim().toLowerCase() });
+    const user = await findLoginUserWithRetry(email.trim().toLowerCase());
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
@@ -220,7 +242,12 @@ router.post("/login", async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (error) {
-    console.error("Login error:", error.message);
+    console.error("Login error:", error.name || "Error", error.code || "", error.message);
+    if (isTransientDatabaseError(error) || mongoose.connection.readyState !== 1) {
+      return res.status(503).json({
+        message: "The database connection is temporarily unstable. Please try again in a few seconds.",
+      });
+    }
     return res.status(500).json({ message: "Unable to login. Please try again." });
   }
 });

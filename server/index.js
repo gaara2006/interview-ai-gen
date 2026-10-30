@@ -6,6 +6,8 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
 const interviewRoutes = require("./routes/interviews");
 const resumeRoutes = require("./routes/resumes");
+const avatarRoutes = require("./routes/avatar");
+const ttsRoutes = require("./routes/tts");
 
 const app = express();
 
@@ -40,7 +42,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/interviews", interviewRoutes);
 app.use("/api/resumes", resumeRoutes);
-
+app.use("/api/avatar", avatarRoutes);
+app.use("/api/tts", ttsRoutes);
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {

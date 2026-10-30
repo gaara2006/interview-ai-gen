@@ -182,7 +182,7 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 pb-5">
+      <div className="space-y-6 pb-7 sm:space-y-7 sm:pb-8">
         <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-violet-300">Your workspace</p>
@@ -203,7 +203,7 @@ const Dashboard = () => {
           <StatCard icon={FaTrophy} label="Average AI score" value={averageScore === null ? "—" : `${averageScore}%`} helper={averageScore === null ? "Complete an evaluated session" : "Across evaluated sessions"} tone="bg-sky-500/15 text-sky-300" loading={loading} />
         </section>
 
-        <section className="grid gap-5 xl:grid-cols-[1.55fr_1fr]">
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(340px,1fr)]">
           <article className="min-w-0 rounded-2xl border border-white/[0.07] bg-[#11111b] p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -233,7 +233,7 @@ const Dashboard = () => {
             </div>
           </article>
 
-          <article className="rounded-2xl border border-white/[0.07] bg-[#11111b] p-5 sm:p-6">
+          <article className="min-w-0 rounded-2xl border border-white/[0.07] bg-[#11111b] p-5 sm:p-6">
             <div>
               <h2 className="text-lg font-semibold text-white">Practice by category</h2>
               <p className="mt-1 text-sm text-zinc-500">Where you have spent your practice time</p>
@@ -263,8 +263,8 @@ const Dashboard = () => {
           </article>
         </section>
 
-        <section className="grid gap-5 xl:grid-cols-[1.35fr_1fr]">
-          <article className="rounded-2xl border border-white/[0.07] bg-[#11111b] p-5 sm:p-6">
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,1fr)]">
+          <article className="min-w-0 rounded-2xl border border-white/[0.07] bg-[#11111b] p-5 sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <div><h2 className="text-lg font-semibold text-white">Recent practice</h2><p className="mt-1 text-sm text-zinc-500">Your latest completed sessions</p></div>
               <button onClick={() => navigate("/history")} className="inline-flex items-center gap-2 text-sm font-medium text-violet-300 transition hover:text-violet-200">View history <FaArrowRight size={11} /></button>
@@ -284,7 +284,7 @@ const Dashboard = () => {
             </div>
           </article>
 
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-1">
+          <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 xl:grid-cols-1">
             <article className="relative overflow-hidden rounded-2xl border border-violet-400/15 bg-gradient-to-br from-[#21123b] via-[#171327] to-[#11111b] p-5 sm:p-6">
               <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-violet-500/10 blur-2xl" />
               <div className="relative flex items-start gap-3"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-400/15 text-violet-200"><FaBrain size={19} /></div><div><h2 className="font-semibold text-white">AI coach insight</h2><p className="mt-1 text-sm text-zinc-400">A useful next step based on your saved sessions.</p></div></div>
@@ -303,7 +303,7 @@ const Dashboard = () => {
           </div>
         </section>
 
-        <section className="flex flex-col justify-between gap-4 rounded-2xl border border-white/[0.07] bg-[#11111b] p-5 sm:flex-row sm:items-center sm:p-6">
+        <section className="flex min-w-0 flex-col justify-between gap-4 rounded-2xl border border-white/[0.07] bg-[#11111b] p-5 sm:flex-row sm:items-center sm:p-6">
           <div className="flex items-start gap-3"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-400/10 text-sky-300"><FaBolt /></div><div><h2 className="font-semibold text-white">Ready for your next question?</h2><p className="mt-1 text-sm text-zinc-500">Choose HR, technical, or communication practice and keep building confidence.</p></div></div>
           <button onClick={() => navigate("/interview")} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-violet-400/25 bg-violet-500/10 px-4 py-2.5 text-sm font-semibold text-violet-200 transition hover:bg-violet-500/20">Continue practice <FaArrowRight size={11} /></button>
         </section>
